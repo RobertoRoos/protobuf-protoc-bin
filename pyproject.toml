@@ -1,0 +1,13 @@
+[tool.poetry]
+name = "protobuf-compiler"
+version = "27.1"
+description = "Pip package to host the protoc binary"
+authors = ["Robert Roos <robert.roos@demcon.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
