@@ -1,12 +1,19 @@
 [tool.poetry]
-name = "protobuf-compiler"
+name = "protobuf-protoc-exe"
 version = "27.1"
 description = "Pip package to host the protoc binary"
 authors = ["Robert Roos <robert.roos@demcon.com>"]
 readme = "README.md"
+packages = [
+    { include = "protobuf_protoc_exe", from = "src" }
+]
+build = "build.py"
+
+[tool.poetry.scripts]
+protoc = { reference = "resources/protoc.exe", type = "file" }
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.8"
 
 [build-system]
 requires = ["poetry-core"]
