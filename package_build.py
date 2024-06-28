@@ -1,7 +1,9 @@
 import urllib.request
+import urllib.error
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import shutil
+import re
 
 
 def build(*_args):
@@ -11,14 +13,15 @@ def build(*_args):
     version named in this project's `pyproject.toml`.
     """
 
-    package_dir = Path(__file__).parent.absolute()
+    root = Path(__file__).parent.absolute()
 
     # Get version out of TOML file:
     version_str = None
-    with open(package_dir / "pyproject.toml", "r") as fh:
+    with open(root / "src" / "protobuf_protoc_exe" / "__init__.py", "r") as fh:
+        re_version = re.compile(r'__version__ = "(.*)"')
         while line := fh.readline():
-            if line.lstrip().startswith("version ="):
-                version_str = line[9:].strip().strip('"')
+            if match := re_version.search(line):
+                version_str = match.group(1)
                 break
 
     if version_str is None:
@@ -28,12 +31,17 @@ def build(*_args):
         download_dir = Path(temp_dir)
         zip_file = download_dir / "protoc.zip"
         url = f"https://github.com/protocolbuffers/protobuf/releases/download/v{version_str}/protoc-{version_str}-win64.zip"
-        urllib.request.urlretrieve(url, zip_file)
+        try:
+            urllib.request.urlretrieve(url, zip_file)
+        except urllib.error.HTTPError as err:
+            raise RuntimeError(
+                f"Failed to download protoc version `{version_str}`: " + str(err)
+            )
 
         shutil.unpack_archive(zip_file, temp_dir)
 
         protoc_download_file = download_dir / "bin" / "protoc.exe"
-        resources_dir = package_dir / "resources"
+        resources_dir = root / "resources"
         if not resources_dir.exists():
             resources_dir.mkdir()
         protoc_dest = resources_dir / protoc_download_file.name

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "protobuf-protoc-exe"
-version = "27.1"
+version = "0.0.0"  # Dynamic versioning plugin is used instead
 description = "Pip package to host the protoc binary"
 authors = ["Robert Roos <robert.roos@demcon.com>"]
 readme = "README.md"
@@ -16,6 +16,15 @@ protoc = { reference = "resources/protoc.exe", type = "file" }
 [tool.poetry.dependencies]
 python = "^3.8"
 
+[tool.poetry-dynamic-versioning]
+enable = true
+latest-tag = true
+
+[tool.poetry-dynamic-versioning.substitution]
+folders = [
+    { path = "src/protobuf_protoc_exe" }
+]
+
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"
