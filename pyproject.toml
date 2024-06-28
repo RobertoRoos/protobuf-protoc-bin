@@ -7,10 +7,11 @@ readme = "README.md"
 packages = [
     { include = "protobuf_protoc_exe", from = "src" }
 ]
-build = "build.py"
+build = "package_build.py"
 
 [tool.poetry.scripts]
 protoc = { reference = "resources/protoc.exe", type = "file" }
+# Unfortunately the build script is run after this script is installed, so an install step is needed first
 
 [tool.poetry.dependencies]
 python = "^3.8"
