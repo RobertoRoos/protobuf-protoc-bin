@@ -1,30 +1,21 @@
-[tool.poetry]
-name = "protobuf-protoc-exe"
-version = "0.0.0"  # Dynamic versioning plugin is used instead
-description = "Pip package to host the protoc binary"
-authors = ["Robert Roos <robert.roos@demcon.com>"]
-readme = "README.md"
-packages = [
-    { include = "protobuf_protoc_exe", from = "src" }
-]
-build = "package_build.py"
-
-[tool.poetry.scripts]
-protoc = { reference = "resources/protoc.exe", type = "file" }
-# Unfortunately the build script is run after this script is installed, so an install step is needed first
-
-[tool.poetry.dependencies]
-python = "^3.8"
-
-[tool.poetry-dynamic-versioning]
-enable = true
-latest-tag = true
-
-[tool.poetry-dynamic-versioning.substitution]
-folders = [
-    { path = "src/protobuf_protoc_exe" }
-]
-
 [build-system]
-requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
-build-backend = "poetry_dynamic_versioning.backend"
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "protobuf-protoc-exe"
+# Versioning is done dynamically
+description = "Pip package to host the protoc binary"
+authors = [
+    {name = "Robert Roos", email = "robert.roos@demcon.com"}
+]
+readme = "README.md"
+dynamic = ["version"]
+requires-python = ">=3.9"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["protobuf_protoc_exe"]
+
+[tool.setuptools_scm]
+version_file = "src/protobuf_protoc_exe/_version.py"
