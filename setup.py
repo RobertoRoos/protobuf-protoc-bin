@@ -108,7 +108,9 @@ class CustomWheel(bdist_wheel):
             system = "macosx_10_11_x86_64"
         elif plat == "win64":
             system = "win_amd64"
-        elif plat in ["win32", "linux-x86_64", "linux-x86_64"]:
+        elif plat.startswith("linux"):
+            system = plat.replace("linux-", "manylinux1_")
+        elif plat in ["win32"]:
             system = plat.replace("-", "_")  # Same but with underscore
         else:
             raise RuntimeError(f"Failed to detect Python platform tag for `{plat}`")
