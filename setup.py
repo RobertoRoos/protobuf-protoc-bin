@@ -8,21 +8,27 @@ import urllib.error
 
 from setuptools import setup
 from setuptools.command.install import install
+from wheel.bdist_wheel import bdist_wheel
 
 
 class CustomInstallCommand(install):
     """Download `protoc` binary and install with package."""
 
-    pkg_root: Path
+    PKG_ROOT: Path
+
+    PLATFORM_SUFFIX: str
+
+    @classmethod
+    def check(cls):
+        """Detect the building platform and choose protoc download type."""
+        cls.PKG_ROOT = Path(__file__).parent.absolute()
+        cls.PLATFORM_SUFFIX = cls._get_platform()
 
     def run(self):
         install.run(self)  # Avoid `super()` for legacy reasons
 
-        self.pkg_root = Path(__file__).parent.absolute()
-
         version = self._get_version()
-
-        plat = self._get_platform()
+        plat = self.PLATFORM_SUFFIX
 
         with TemporaryDirectory() as temp_dir:
             download_dir = Path(temp_dir).absolute()
@@ -50,7 +56,7 @@ class CustomInstallCommand(install):
     def _get_version(self) -> str:
         """Get current package version (or raise exception)."""
         with open(
-            self.pkg_root / "src" / "protobuf_protoc_exe" / "_version.py", "r"
+            self.PKG_ROOT / "src" / "protobuf_protoc_exe" / "_version.py", "r"
         ) as fh:
             re_version = re.compile(r'.*version = [\'"](.*)[\'"]')
             while line := fh.readline():
@@ -59,8 +65,8 @@ class CustomInstallCommand(install):
 
         raise RuntimeError(f"Failed to parse version from pyproject.toml")
 
-    @staticmethod
-    def _get_platform() -> str:
+    @classmethod
+    def _get_platform(cls) -> str:
         """Detect necessary platform download."""
         system = platform.system().lower()
         arch = [x.lower() if isinstance(x, str) else x for x in platform.architecture()]
@@ -86,10 +92,35 @@ class CustomInstallCommand(install):
         )
 
 
+# Execute platform check
+CustomInstallCommand.check()
+
+
+class CustomWheel(bdist_wheel):
+    """Custom command to mark our wheel as platform-specific."""
+
+    def get_tag(self):
+        plat = CustomInstallCommand.PLATFORM_SUFFIX
+
+        if plat == "osx-universal_binary":
+            system = "macosx_10_11_universal2"
+        elif plat == "osx-x86_64":
+            system = "macosx_10_11_x86_64"
+        elif plat == "win64":
+            system = "win_amd64"
+        elif plat in ["win32", "linux-x86_64", "linux-x86_64"]:
+            system = plat.replace("-", "_")  # Same but with underscore
+        else:
+            raise RuntimeError(f"Failed to detect Python platform tag for `{plat}`")
+
+        return "py2.py3", "none", system
+
+
 # noinspection PyTypeChecker
 setup(
     cmdclass={
         "install": CustomInstallCommand,
+        "bdist_wheel": CustomWheel,
     }
 )
 
