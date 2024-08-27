@@ -11,7 +11,7 @@ authors = [
 ]
 readme = "README.md"
 dynamic = ["version"]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
@@ -19,3 +19,6 @@ packages = ["protobuf_protoc_exe"]
 
 [tool.setuptools_scm]
 version_file = "src/protobuf_protoc_exe/_version.py"
+# Use the tag directly, without local changes:
+version_scheme = "only-version"
+local_scheme = "no-local-version"
