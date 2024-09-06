@@ -54,9 +54,10 @@ class CustomInstallCommand(install):
 
             shutil.unpack_archive(zip_file, download_dir)
 
-            filename = "protoc" + (".exe" if "win" in plat.lower() else "")
-            protoc_download_path = download_dir / "bin" / filename
-            protoc_dest = Path(self.install_scripts).absolute() / filename
+            # Copy binary:
+            bin_filename = "protoc" + (".exe" if "win" in plat.lower() else "")
+            protoc_download_path = download_dir / "bin" / bin_filename
+            protoc_dest = Path(self.install_scripts).absolute() / bin_filename
             protoc_dest.parent.mkdir(parents=True, exist_ok=True)
             self.copy_file(
                 str(protoc_download_path),
@@ -72,6 +73,18 @@ class CustomInstallCommand(install):
                 | stat.S_IXGRP
                 | stat.S_IROTH
                 | stat.S_IXOTH,  # Set to 755 mode
+            )
+
+            # Copy 'include' directory als well
+            # But protoc requires its include/ to be in the folder adjacent to the
+            # binary, not in a regular system include/ folder
+            include_download_path = download_dir / "include"
+            # The 'google' directory will be created in here:
+            include_dest = protoc_dest.parent / "include"
+            include_dest.mkdir(parents=True, exist_ok=True)
+            self.copy_tree(
+                str(include_download_path),
+                str(include_dest)
             )
 
     def _get_version(self) -> str:
