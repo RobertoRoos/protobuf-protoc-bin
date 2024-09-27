@@ -53,6 +53,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, ubuntu-20.04, macos-latest, macos-13, macos-12, windows-latest]
     steps:
+      - uses: actions/checkout @v4
       - uses: actions/download-artifact@v4
         with:
           name: package
@@ -64,3 +65,4 @@ jobs:
       - run: |
           pip install --no-index --find-links ./dist protobuf_protoc_exe
           protoc --version
+          python -m unittest discover tests/
