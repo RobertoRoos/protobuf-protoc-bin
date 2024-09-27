@@ -1,5 +1,7 @@
+import stat
 from pathlib import Path
 import re
+import os
 from tempfile import TemporaryDirectory
 import shutil
 import platform
@@ -59,6 +61,17 @@ class CustomInstallCommand(install):
             self.copy_file(
                 str(protoc_download_path),
                 str(protoc_dest),
+            )
+            # Allow executing of new file:
+            os.chmod(
+                protoc_dest,
+                stat.S_IRUSR
+                | stat.S_IWUSR
+                | stat.S_IXUSR
+                | stat.S_IRGRP
+                | stat.S_IXGRP
+                | stat.S_IROTH
+                | stat.S_IXOTH,  # Set to 755 mode
             )
 
     def _get_version(self) -> str:
