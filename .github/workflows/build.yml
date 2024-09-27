@@ -13,10 +13,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          # Make sure all tags are always available for version resolving:
-          fetch-depth: 0
-          fetch-tags: "true"
 
       - uses: actions/setup-python@v5
         with:
