@@ -30,10 +30,18 @@ class CustomInstallCommand(install):
         version = self._get_version()
         plat = self.PLATFORM_SUFFIX
 
+        base_url = "https://github.com/protocolbuffers/protobuf/releases"
+
+        if version == "0.0":  # Typical for un-tagged CI build
+            print("Finding latest protoc release...")
+            new_url: str = urllib.request.urlopen(f"{base_url}/latest").geturl()
+            _, _, new_version = new_url.rpartition("/")
+            version = new_version.lstrip("v")
+
         with TemporaryDirectory() as temp_dir:
             download_dir = Path(temp_dir).absolute()
             zip_file = download_dir / "protoc.zip"
-            url = f"https://github.com/protocolbuffers/protobuf/releases/download/v{version}/protoc-{version}-{plat}.zip"
+            url = f"{base_url}/download/v{version}/protoc-{version}-{plat}.zip"
             print(f"Downloading {url}...")
             try:
                 urllib.request.urlretrieve(url, zip_file)

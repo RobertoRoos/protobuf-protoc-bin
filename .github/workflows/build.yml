@@ -22,4 +22,10 @@ jobs:
           python -m pip install -U pip
           pip install build
 
-      - run: python -m build
+      - run: python -m build --wheel -v
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.os }}
+          retention-days: 1
+          path: dist
