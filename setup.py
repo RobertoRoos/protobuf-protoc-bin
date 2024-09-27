@@ -1,12 +1,13 @@
-import stat
-from pathlib import Path
-import re
 import os
-from tempfile import TemporaryDirectory
-import shutil
 import platform
-import urllib.request
+import re
+import shutil
+import stat
+import sysconfig
 import urllib.error
+import urllib.request
+from pathlib import Path
+from tempfile import TemporaryDirectory
 
 from setuptools import setup
 from setuptools.command.install import install
@@ -16,21 +17,13 @@ from wheel.bdist_wheel import bdist_wheel
 class CustomInstallCommand(install):
     """Download `protoc` binary and install with package."""
 
-    PKG_ROOT: Path
-
-    PLATFORM_SUFFIX: str
-
-    @classmethod
-    def check(cls):
-        """Detect the building platform and choose protoc download type."""
-        cls.PKG_ROOT = Path(__file__).parent.absolute()
-        cls.PLATFORM_SUFFIX = cls._get_platform()
+    PKG_ROOT = Path(__file__).parent.absolute()
 
     def run(self):
         install.run(self)  # Avoid `super()` for legacy reasons
 
         version = self._get_version()
-        plat = self.PLATFORM_SUFFIX
+        plat = self._get_platform()
 
         base_url = "https://github.com/protocolbuffers/protobuf/releases"
 
@@ -82,10 +75,7 @@ class CustomInstallCommand(install):
             # The 'google' directory will be created in here:
             include_dest = protoc_dest.parent / "include"
             include_dest.mkdir(parents=True, exist_ok=True)
-            self.copy_tree(
-                str(include_download_path),
-                str(include_dest)
-            )
+            self.copy_tree(str(include_download_path), str(include_dest))
 
     def _get_version(self) -> str:
         """Get current package version (or raise exception)."""
@@ -99,9 +89,12 @@ class CustomInstallCommand(install):
 
         raise RuntimeError(f"Failed to parse version from pyproject.toml")
 
-    @classmethod
-    def _get_platform(cls) -> str:
-        """Detect necessary platform download."""
+    @staticmethod
+    def _get_platform() -> str:
+        """Detect necessary platform tag for protoc download.
+
+        See available tags from https://github.com/protocolbuffers/protobuf/releases/latest
+        """
         system = platform.system().lower()
         arch = [x.lower() if isinstance(x, str) else x for x in platform.architecture()]
 
@@ -126,28 +119,36 @@ class CustomInstallCommand(install):
         )
 
 
-# Execute platform check
-CustomInstallCommand.check()
-
-
 class CustomWheel(bdist_wheel):
-    """Custom command to mark our wheel as platform-specific."""
+    """Custom command to mark our wheel as platform-specific.
+
+    Without this, all wheels are marked as `None` and are considered platform
+    independent, which is not true as we included a specific `protoc` binary.
+
+    The tag produced here is different from the tag used for `protoc` in
+    :meth:`CustomInstallCommand._get_platform`.
+    """
 
     def get_tag(self):
-        plat = CustomInstallCommand.PLATFORM_SUFFIX
+        """
 
-        if plat == "osx-universal_binary":
-            system = "macosx_10_11_universal2"
-        elif plat == "osx-x86_64":
-            system = "macosx_10_11_x86_64"
-        elif plat == "win64":
-            system = "win_amd64"
-        elif plat in ["win32", "linux-x86_64", "linux-x86_64"]:
-            system = plat.replace("-", "_")  # Same but with underscore
-        else:
-            raise RuntimeError(f"Failed to detect Python platform tag for `{plat}`")
+        See https://packaging.python.org/en/latest/specifications/platform-compatibility-tags/
+        """
+        impl_tag = "py2.py3"  # Same wheel across Python versions
+        abi_tag = "none"  # Same wheeel across ABI versions (not a C-extension)
+        # But we need to differentiate on the platform for the compiled adslib:
+        plat_tag = sysconfig.get_platform().replace("-", "_").replace(".", "_")
 
-        return "py2.py3", "none", system
+        if plat_tag.startswith("linux_"):
+            # But the basic Linux prefix is deprecated, use new scheme instead:
+            plat_tag = "manylinux_2_24" + plat_tag[5:]
+
+        # MacOS platform tags area already okay
+
+        # We also keep Windows tags in place, instead of using `any`, to prevent an
+        # obscure Linux platform to getting a wheel without adslib source
+
+        return impl_tag, abi_tag, plat_tag
 
 
 # noinspection PyTypeChecker
