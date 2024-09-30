@@ -66,3 +66,19 @@ jobs:
           pip install --no-index --find-links ./dist protobuf_protoc_bin
           protoc --version
           python -m unittest discover tests/
+
+  # Publish to PyPi if tests succeeded and this job is for a pushed tag that starts with 'v'
+  publish:
+    name: Publish distributions
+    needs: test_artifacts
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: package
+          path: dist
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
