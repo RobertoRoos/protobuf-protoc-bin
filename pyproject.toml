@@ -3,9 +3,9 @@ requires = ["setuptools", "setuptools-scm", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "protobuf-protoc-exe"
+name = "protobuf-protoc-bin"
 # Versioning is done dynamically
-description = "Pip package to host the protoc binary"
+description = "Pip package to host the protobuf protoc binary"
 authors = [
     {name = "Robert Roos", email = "robert.roos@demcon.com"}
 ]
@@ -15,10 +15,10 @@ requires-python = ">=2.7"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
-packages = ["protobuf_protoc_exe"]
+packages = ["protobuf_protoc_bin"]
 
 [tool.setuptools_scm]
-version_file = "src/protobuf_protoc_exe/_version.py"
+version_file = "src/protobuf_protoc_bin/_version.py"
 # Use the tag directly, without local changes:
 version_scheme = "only-version"
 local_scheme = "no-local-version"

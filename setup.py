@@ -80,7 +80,7 @@ class CustomInstallCommand(install):
     def _get_version(self) -> str:
         """Get current package version (or raise exception)."""
         with open(
-            self.PKG_ROOT / "src" / "protobuf_protoc_exe" / "_version.py", "r"
+            self.PKG_ROOT / "src" / "protobuf_protoc_bin" / "_version.py", "r"
         ) as fh:
             re_version = re.compile(r'.*version = [\'"](.*)[\'"]')
             while line := fh.readline():

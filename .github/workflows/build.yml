@@ -63,6 +63,6 @@ jobs:
           python-version: "3.12"
       # Now install the package from the local wheels and try to use it:
       - run: |
-          pip install --no-index --find-links ./dist protobuf_protoc_exe
+          pip install --no-index --find-links ./dist protobuf_protoc_bin
           protoc --version
           python -m unittest discover tests/

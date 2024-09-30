@@ -1,33 +1,41 @@
-# Protobuf Protoc Exe
+# Protobuf Protoc Bin
 
-This Python package is a wrapper for [protobuf](https://protobuf.dev/)'s `protoc` compiler.
+This Python package is an installer for [protobuf](https://protobuf.dev/)'s `protoc` compiler.
 
-Use this package to install a specific version of `protoc` in your project.
+Use this package to install a specific version of `protoc` in your project, without having to figure out the installation externally.
 
-This repository does not contain any binaries on itself!
-Instead, the binaries are downloaded from the official protobuf Github upon installation,  you don't have to trust this package much.
+This package is not maintained by or affiliated with the official protobuf group!
 
-## Registry
+This repository does not host any binaries on itself.
+Instead, the binaries are downloaded from the official protobuf Github during package built or during source installation.
 
-This package is currently not hosted on a registry like PyPi.
-You can install it directly from Github though.
+## How to install
 
-## How to use
-
-To install it directly (pinning a specific version with `@...`):
+The package is hosted on PyPi at https://pypi.org/project/protobuf-protoc-bin (WIP).  
+It can be installed via PIP as normal with:
+```shell
+pip install protobuf-protoc-bin
 ```
-pip install "git+https://github.com/RobertoRoos/protobuf-protoc-exe.git@v27.1"
+
+The wheels hosted on PyPi do contain a copy of the protoc releases.
+You can also install this package directly from the Github source.
+During an installation from source, `protoc` will be downloaded fresh from the official Protobuf releases:
 ```
+pip install "git+https://github.com/RobertoRoos/protobuf-protoc-bin.git@<tag>"
+```
+(Replacing `<tag>` with a version like `v27.3`.)
+
+## How to require
 
 To require `protoc` only during a build script, include it in your `pyproject.toml` with:
 ```
 [build-system]
-requires = ["poetry-core", "protobuf-protoc-exe @ git+https://github.com/RobertoRoos/protobuf-protoc-exe.git@v27.1"]
+requires = [..., "protobuf-protoc-bin==27.3"]
 # ...
 ```
 
-Or make it part of an additional install group in your regular environment:
+Or make it part of an additional install group in your regular environment (with the Poetry backend):
 ```
 [tool.poetry.group.dev.dependencies]
-protobuf-protoc-exe = {git = "https://github.com/RobertoRoos/protobuf-protoc-exe.git", tag = "v27.1"}
+protobuf-protoc-bin = "27.3"
 ```
