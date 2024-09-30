@@ -13,6 +13,12 @@ readme = "README.md"
 dynamic = ["version"]
 requires-python = ">=2.7"
 
+[project.urls]
+Repository = "https://github.com/RobertoRoos/protobuf-protoc-bin"
+Issues = "https://github.com/RobertoRoos/protobuf-protoc-bin/issues"
+Protobuf = "https://protobuf.dev/"
+"Protobuf Github" = "https://github.com/protocolbuffers/protobuf"
+
 [tool.setuptools]
 package-dir = {"" = "src"}
 packages = ["protobuf_protoc_bin"]
