@@ -11,7 +11,7 @@ Instead, the binaries are downloaded from the official protobuf Github during pa
 
 ## How to install
 
-The package is hosted on PyPi at https://pypi.org/project/protobuf-protoc-bin (WIP).  
+The package is hosted on PyPi at https://pypi.org/project/protobuf-protoc-bin.  
 It can be installed via PIP as normal with:
 ```shell
 pip install protobuf-protoc-bin
@@ -39,3 +39,17 @@ Or make it part of an additional install group in your regular environment (with
 [tool.poetry.group.dev.dependencies]
 protobuf-protoc-bin = "27.3"
 ```
+
+## How to develop
+
+The following concerns only contributors to this package.
+
+### Adding a release
+
+Each `protobuf-protoc-bin` release must correspond one-to-one to a [Protobuf release](https://github.com/protocolbuffers/protobuf/releases).
+
+To trigger a new release, simply push a new tag to the tip of the main branch that matches the protobuf release, including the leading 'v'.
+An example of a valid tag is `v27.3`.
+
+This means multiple package releases are made from the same commit.
+However, the reference that triggers the CI build will affect the version assigned by `setuptools_scm` and therefor the protobuf release that's being packaged.
