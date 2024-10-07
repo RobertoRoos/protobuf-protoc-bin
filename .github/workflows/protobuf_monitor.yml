@@ -19,22 +19,34 @@ jobs:
                       const {data: releases_all } = await github.rest.repos.listReleases({
                           owner: "protocolbuffers",
                           repo: "protobuf",
-                          per_page: 3,
+                          per_page: 30,
                       });
+                      const protoc_tags = releases_all.map(rel => rel["tag_name"]);
+                      console.log("Protoc releases:", protoc_tags)
                       
                       const {data: our_tags_all } = await github.rest.repos.listTags({
                           owner: context.repo.owner,
                           repo: context.repo.repo,
-                          per_page: 3,
+                          per_page: 30,
                       });
                       const our_tags = our_tags_all.map(tag => tag["name"]);
+                      console.log("Our tags:", our_tags)
                       
                       date_minimum = Date.parse("2024-09-01T00:00:00");
-                      let releases = [];
+                      let new_tags = [];
                       for (release of releases_all) {
                           const tag = release["tag_name"];
                           if (Date.parse(release["created_at"]) >= date_minimum && !our_tags.includes(tag)) {
-                              releases.push(tag);
+                              new_tags.push(tag);
                           }
                       }
-                      console.log("New tags to be made:", releases)
+                      console.log("New tags to be made:", new_tags)
+                      
+                      for (tag of new_tags) {
+                          const result = await github.rest.git.createRef({
+                              owner: context.repo.owner,
+                              repo: context.repo.repo,
+                              ref: "refs/tags/" + tag,
+                              sha: context.sha
+                          })
+                      }
