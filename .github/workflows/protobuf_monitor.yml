@@ -21,6 +21,16 @@ jobs:
                           repo: "protobuf",
                           per_page: 3,
                       });
+                      
+                      const {data: our_tags_all } = await github.rest.repos.listTags({
+                          owner: context.repo.owner,
+                          repo: context.repo.repo,
+                          per_page: 3,
+                      });
+                      console.log(our_tags_all)
+                      const our_tags = our_tags_all.map(tag => tag["name"]);
+                      console.log(our_tags)
+                      
                       date_minimum = Date.parse("2024-09-01T00:00:00");
                       let releases = [];
                       for (release of releases_all) {
