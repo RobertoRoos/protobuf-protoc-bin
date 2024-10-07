@@ -27,18 +27,14 @@ jobs:
                           repo: context.repo.repo,
                           per_page: 3,
                       });
-                      console.log(our_tags_all)
                       const our_tags = our_tags_all.map(tag => tag["name"]);
-                      console.log(our_tags)
                       
                       date_minimum = Date.parse("2024-09-01T00:00:00");
                       let releases = [];
                       for (release of releases_all) {
-                          console.log(release);
-                          console.log(release["created_at"]);
-                          console.log(Date.parse(release["created_at"]));
-                          if (Date.parse(release.created_at) >= date_minimum) {
-                              releases.push(release.tag_name);
+                          const tag = release["tag_name"];
+                          if (Date.parse(release["created_at"]) >= date_minimum && !our_tags.includes(tag)) {
+                              releases.push(tag);
                           }
                       }
-                      console.log(releases)
+                      console.log("New tags to be made:", releases)
