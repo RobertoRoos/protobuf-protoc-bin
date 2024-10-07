@@ -21,11 +21,12 @@ jobs:
                           repo: "protobuf",
                           per_page: 3,
                       });
-                      console.log(releases_all);
-                      date_minimum = new Date("2024-09-01T00:00:00");
+                      date_minimum = Date.parse("2024-09-01T00:00:00");
                       let releases = [];
                       for (release in releases_all) {
-                          if (new Date(release["created_at"]) >= date_minimum) {
+                          console.log(release["created_at"]);
+                          console.log(Date.parse(release["created_at"]));
+                          if (Date.parse(release["created_at"]) >= date_minimum) {
                               releases.push(release["tag_name"]);
                           }
                       }
