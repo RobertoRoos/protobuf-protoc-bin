@@ -1,0 +1,23 @@
+#
+# Periodic check of the official Protobuf repo that will mirror new releases with new tags here.
+#
+
+name: Protobuf Monitor
+
+on: push
+
+jobs:
+    find_releases:
+        name: Find releases
+        runs-on: ubuntu-latest
+
+        steps:
+
+            - uses: actions/github-script@v7
+              with:
+                  script: |
+                      let releases = github.rest.repos.listReleases({
+                        owner: "protocolbuffers",
+                        repo: "protobuf"
+                      })
+                      console.log(releases)
