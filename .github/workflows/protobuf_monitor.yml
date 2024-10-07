@@ -1,0 +1,54 @@
+#
+# Periodic check of the official Protobuf repo that will mirror new releases with new tags here.
+#
+
+name: Protobuf Monitor
+
+on:
+    schedule:
+        # Check every morning at 6 for new Protoc releases:
+        - cron: "0 6 * * *"
+
+jobs:
+    find_releases:
+        name: Find releases
+        runs-on: ubuntu-latest
+
+        steps:
+
+            - uses: actions/github-script@v7
+              with:
+                  script: |
+                      const {data: releases_all } = await github.rest.repos.listReleases({
+                          owner: "protocolbuffers",
+                          repo: "protobuf",
+                          per_page: 50,
+                      }); // Get x most recent releases, which should be plenty for one loop
+                      const protoc_tags = releases_all.map(rel => rel["tag_name"]);
+                      console.log("Protoc releases:", protoc_tags)
+                      
+                      const our_tags_all = await github.paginate(github.rest.repos.listTags, {
+                          owner: context.repo.owner,
+                          repo: context.repo.repo,
+                      });
+                      const our_tags = our_tags_all.map(tag => tag["name"]);
+                      console.log("Our tags:", our_tags)
+                      
+                      date_minimum = Date.parse("2024-09-01T00:00:00");
+                      let new_tags = [];
+                      for (release of releases_all) {
+                          const tag = release["tag_name"];
+                          if (Date.parse(release["created_at"]) >= date_minimum && !our_tags.includes(tag)) {
+                              new_tags.push(tag);
+                          }
+                      }
+                      console.log("New tags to be made:", new_tags)
+                      
+                      for (tag of new_tags) {
+                          const result = await github.rest.git.createRef({
+                              owner: context.repo.owner,
+                              repo: context.repo.repo,
+                              ref: "refs/tags/" + tag,
+                              sha: context.sha
+                          })
+                      }
