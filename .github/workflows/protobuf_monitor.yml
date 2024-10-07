@@ -19,14 +19,15 @@ jobs:
             - uses: actions/github-script@v7
               with:
                   script: |
-                      const {data: releases_all } = await github.rest.repos.listReleases({
+                      // Get a full list of all protoc releases:
+                      const releases_all = await github.paginate(github.rest.repos.listReleases, {
                           owner: "protocolbuffers",
                           repo: "protobuf",
-                          per_page: 50,
-                      }); // Get x most recent releases, which should be plenty for one loop
+                      });
                       const protoc_tags = releases_all.map(rel => rel["tag_name"]);
                       console.log("Protoc releases:", protoc_tags)
                       
+                      // Now get a full list of all of our own tags:
                       const our_tags_all = await github.paginate(github.rest.repos.listTags, {
                           owner: context.repo.owner,
                           repo: context.repo.repo,
@@ -34,7 +35,8 @@ jobs:
                       const our_tags = our_tags_all.map(tag => tag["name"]);
                       console.log("Our tags:", our_tags)
                       
-                      date_minimum = Date.parse("2024-09-01T00:00:00");
+                      // Find which tags still need to be created (skipping super old releases):
+                      date_minimum = Date.parse("2024-01-01T00:00:00");
                       let new_tags = [];
                       for (release of releases_all) {
                           const tag = release["tag_name"];
@@ -44,6 +46,7 @@ jobs:
                       }
                       console.log("New tags to be made:", new_tags)
                       
+                      // Create light-weight tags in our repo:
                       for (tag of new_tags) {
                           const result = await github.rest.git.createRef({
                               owner: context.repo.owner,
