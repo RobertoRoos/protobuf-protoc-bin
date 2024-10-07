@@ -4,7 +4,10 @@
 
 name: Protobuf Monitor
 
-on: push
+on:
+    schedule:
+        # Check every morning at 6 for new Protoc releases:
+        - cron: "0 6 * * *"
 
 jobs:
     find_releases:
@@ -41,11 +44,11 @@ jobs:
                       }
                       console.log("New tags to be made:", new_tags)
                       
-#                      for (tag of new_tags) {
-#                          const result = await github.rest.git.createRef({
-#                              owner: context.repo.owner,
-#                              repo: context.repo.repo,
-#                              ref: "refs/tags/" + tag,
-#                              sha: context.sha
-#                          })
-#                      }
+                      for (tag of new_tags) {
+                          const result = await github.rest.git.createRef({
+                              owner: context.repo.owner,
+                              repo: context.repo.repo,
+                              ref: "refs/tags/" + tag,
+                              sha: context.sha
+                          })
+                      }
