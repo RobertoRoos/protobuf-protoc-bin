@@ -5,8 +5,10 @@
 name: Protobuf Monitor
 
 on:
+    # Allow manual trigger:
+    workflow_dispatch:
+    # Check every morning at 6 for new Protoc releases:
     schedule:
-        # Check every morning at 6 for new Protoc releases:
         - cron: "*/15 * * * *"
 
 jobs:
