@@ -7,7 +7,7 @@ name: Protobuf Monitor
 on:
     schedule:
         # Check every morning at 6 for new Protoc releases:
-        - cron: "0 6 * * *"
+        - cron: "*/15 * * * *"
 
 jobs:
     find_releases:
@@ -46,12 +46,12 @@ jobs:
                       }
                       console.log("New tags to be made:", new_tags)
                       
-                      // Create light-weight tags in our repo:
-                      for (tag of new_tags) {
-                          const result = await github.rest.git.createRef({
-                              owner: context.repo.owner,
-                              repo: context.repo.repo,
-                              ref: "refs/tags/" + tag,
-                              sha: context.sha
-                          })
-                      }
+#                      // Create light-weight tags in our repo:
+#                      for (tag of new_tags) {
+#                          const result = await github.rest.git.createRef({
+#                              owner: context.repo.owner,
+#                              repo: context.repo.repo,
+#                              ref: "refs/tags/" + tag,
+#                              sha: context.sha
+#                          })
+#                      }
