@@ -19,24 +19,24 @@ class CustomInstallCommand(install):
 
     PKG_ROOT = Path(__file__).parent.absolute()
 
+    BASE_URL = "https://github.com/protocolbuffers/protobuf/releases"
+
     def run(self):
         install.run(self)  # Avoid `super()` for legacy reasons
 
         version = self._get_version()
         plat = self._get_platform()
 
-        base_url = "https://github.com/protocolbuffers/protobuf/releases"
-
         if version == "0.0":  # Typical for un-tagged CI build
             print("Finding latest protoc release...")
-            new_url: str = urllib.request.urlopen(f"{base_url}/latest").geturl()
+            new_url: str = urllib.request.urlopen(f"{self.BASE_URL}/latest").geturl()
             _, _, new_version = new_url.rpartition("/")
             version = new_version.lstrip("v")
 
         with TemporaryDirectory() as temp_dir:
             download_dir = Path(temp_dir).absolute()
             zip_file = download_dir / "protoc.zip"
-            url = f"{base_url}/download/v{version}/protoc-{version}-{plat}.zip"
+            url = self._get_url(plat, version)
             print(f"Downloading {url}...")
             try:
                 urllib.request.urlretrieve(url, zip_file)
@@ -76,6 +76,24 @@ class CustomInstallCommand(install):
             include_dest = protoc_dest.parent / "include"
             include_dest.mkdir(parents=True, exist_ok=True)
             self.copy_tree(str(include_download_path), str(include_dest))
+
+    def _get_url(self, plat: str, version: str) -> str:
+        """Get URL to the archive for Protoc.
+
+        There are some discrepancies in version string formatting to cover.
+        """
+        # Check if the version is like `v1.0rc1`, `v1.0-rc-1`, etc.
+        rc_match = re.match(r"^(.+)-?rc-?(.+)$", version)
+        if rc_match:
+            ver1 = "v" + rc_match.group(1) + "-rc" + rc_match.group(2)
+            ver2 = rc_match.group(1) + "-rc-" + rc_match.group(2)
+        else:
+            ver1 = "v" + version
+            ver2 = version
+
+        # ver1 does have the `v` prefix, the other doesn't
+        return f"{self.BASE_URL}/download/{ver1}/protoc-{ver2}-{plat}.zip"
+
 
     def _get_version(self) -> str:
         """Get current package version (or raise exception)."""

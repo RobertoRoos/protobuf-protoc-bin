@@ -53,3 +53,8 @@ An example of a valid tag is `v27.3`.
 
 This means multiple package releases are made from the same commit.
 However, the reference that triggers the CI build will affect the version assigned by `setuptools_scm` and therefor the protobuf release that's being packaged.
+
+### CI
+
+A nightly workflow runs a script that looks for new Protoc releases and copies the tags into here, at the tip of the `main` branch.
+So future releases should show up fully automatically.
