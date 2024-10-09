@@ -24,7 +24,6 @@ jobs:
                   # trigger new workflows.
                   github-token: ${{ secrets.CUSTOM_PAT }}
                   script: |
-                      /*
                       // Get a full list of all protoc releases:
                       const releases_all = await github.paginate(github.rest.repos.listReleases, {
                           owner: "protocolbuffers",
@@ -32,7 +31,7 @@ jobs:
                       });
                       const protoc_tags = releases_all.map(rel => rel["tag_name"]);
                       console.log("Protoc releases:", protoc_tags)
-
+                      
                       // Now get a full list of all of our own tags:
                       const our_tags_all = await github.paginate(github.rest.repos.listTags, {
                           owner: context.repo.owner,
@@ -40,7 +39,7 @@ jobs:
                       });
                       const our_tags = our_tags_all.map(tag => tag["name"]);
                       console.log("Our tags:", our_tags)
-
+                      
                       // Find which tags still need to be created (skipping super old releases):
                       date_minimum = Date.parse("2024-01-01T00:00:00");
                       let new_tags = [];
@@ -50,8 +49,6 @@ jobs:
                               new_tags.push(tag);
                           }
                       }
-                      */
-                      let new_tags = ["v0.0.1"];
                       console.log("New tags to be made:", new_tags)
                       
                       // Create light-weight tags in our repo:
