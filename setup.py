@@ -69,11 +69,11 @@ class CustomInstallCommand(install):
             )
 
             # Copy 'include' directory als well
-            # But protoc requires its include/ to be in the folder adjacent to the
-            # binary, not in a regular system include/ folder
             include_download_path = download_dir / "include"
             # The 'google' directory will be created in here:
-            include_dest = protoc_dest.parent / "include"
+            include_dest = Path(self.install_data) / "include"
+            # Instead of setting 'include/' as a destination directly, we put our files
+            # under `data/include`, but on installing they will be moved accordingly.
             include_dest.mkdir(parents=True, exist_ok=True)
             self.copy_tree(str(include_download_path), str(include_dest))
 
