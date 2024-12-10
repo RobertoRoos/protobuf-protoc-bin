@@ -1,5 +1,9 @@
 # Protobuf Protoc Bin
 
+[![PyPI - Version](https://img.shields.io/pypi/v/protobuf-protoc-bin)](https://pypi.org/project/protobuf-protoc-bin)
+[![Auto monitoring of protobuf](https://github.com/RobertoRoos/protobuf-protoc-bin/actions/workflows/protobuf_monitor.yml/badge.svg)](https://github.com/RobertoRoos/protobuf-protoc-bin/actions/workflows/protobuf_monitor.yml)
+[![Build status](https://github.com/RobertoRoos/protobuf-protoc-bin/actions/workflows/build.yml/badge.svg)](https://github.com/RobertoRoos/protobuf-protoc-bin/actions/workflows/build.yml)
+
 This Python package is an installer for [protobuf](https://protobuf.dev/)'s `protoc` compiler.
 
 Use this package to install a specific version of `protoc` in your project, without having to figure out the installation externally.
