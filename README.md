@@ -62,3 +62,19 @@ However, the reference that triggers the CI build will affect the version assign
 
 A nightly workflow runs a script that looks for new Protoc releases and copies the tags into here, at the tip of the `main` branch.
 So future releases should show up fully automatically.
+
+### Platform Tags
+
+Relevant for a binary wheel release is the [platform tag](https://packaging.python.org/en/latest/specifications/platform-compatibility-tags/), to indicate to a client which wheel should be downloaded.
+Separate from that is downloading the correct archive from the protoc release page.
+Below is a table showing known examples and their correct values.
+In `setup.py` there is logic to determine these values dynamically.
+
+|                            | Ubuntu (arm64)                | Ubuntu (x64)                | Windows (x64)          | MacOS (x64)               |
+|----------------------------|-------------------------------|-----------------------------|------------------------|---------------------------|
+| Github runner              | ubuntu-24.04-arm              | ubuntu-latest               | windows-latest         | macos-latest              |
+| `sysconfig.get_platform()` | linux-aarch64                 | linux-x86_64                | win-amd64              | macosx-10.13-universal2   |
+| `platform.system()`        | Linux                         | Linux                       | Windows                | Darwin                    |
+| `platform.architecture()`  | ('64bit', 'ELF')              | ('64bit', 'ELF')            | ('64bit', 'WindowsPE') | ('64bit', '')             |
+| Wheel platform tag         | manylinux_2_24_aarch64        | manylinux_2_24_x86_64       | win_amd64              | macosx_10_13_universal2   |
+| Protoc archive name        | protoc-vvv-linux-aarch_64.zip | protoc-vvv-linux-x86_64.zip | protoc-vvv-win64.zip   | protoc-vvv-osx-x86_64.zip |
