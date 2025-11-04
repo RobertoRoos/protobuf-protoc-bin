@@ -152,9 +152,14 @@ class CustomWheel(bdist_wheel):
 
         See https://packaging.python.org/en/latest/specifications/platform-compatibility-tags/
         """
+
+        print("sysconfig.get_platform():", sysconfig.get_platform())
+        print("platform.system():", platform.system())
+        print("platform.architecture():", platform.architecture())
+
         impl_tag = "py2.py3"  # Same wheel across Python versions
         abi_tag = "none"  # Same wheeel across ABI versions (not a C-extension)
-        # But we need to differentiate on the platform for the compiled adslib:
+        # But we need to differentiate on the platform for the protoc binary:
         plat_tag = sysconfig.get_platform().replace("-", "_").replace(".", "_")
 
         if plat_tag.startswith("linux_"):
@@ -164,7 +169,12 @@ class CustomWheel(bdist_wheel):
         # MacOS platform tags area already okay
 
         # We also keep Windows tags in place, instead of using `any`, to prevent an
-        # obscure Linux platform to getting a wheel without adslib source
+        # obscure Linux platform to getting an incompatible wheel
+
+        print("Info:")
+        print("impl_tag:", impl_tag)
+        print("abi_tag:", abi_tag)
+        print("plat_tag:", plat_tag)
 
         return impl_tag, abi_tag, plat_tag
 
