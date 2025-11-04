@@ -113,8 +113,9 @@ class CustomInstallCommand(install):
 
         See available tags from https://github.com/protocolbuffers/protobuf/releases/latest
         """
-        system = platform.system().lower()
+        system = platform.system().lower() # Like "linux"
         arch = [x.lower() if isinstance(x, str) else x for x in platform.architecture()]
+        # Like `("64bit", "ELF")`
 
         if system == "windows":
             if "64bit" in arch:
@@ -122,9 +123,10 @@ class CustomInstallCommand(install):
             return "win32"
 
         if system == "linux":
-            if "64bit" in arch:
-                return "linux-x86_64"
-            return "linux-x86_32"
+            platform_str = sysconfig.get_platform().lower()  # Like "linux-aarch64"
+
+            # Returned platform is the right format, but a space is needed for "ARM":
+            return platform_str.replace("aarch64", "aarch_64")
             # Other Linux types are still ignored
 
         if system == "darwin":
