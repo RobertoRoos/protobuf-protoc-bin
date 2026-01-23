@@ -14,9 +14,9 @@ jobs:
   build_wheels:
     name: Build wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    strategy: &build_strategy
+    strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest, ubuntu-24.04-arm]
+        os: [ubuntu-latest, windows-latest, macos-latest, macos-15-intel, ubuntu-24.04-arm, windows-11-arm]
 
     steps:
       - uses: actions/checkout@v6
@@ -58,9 +58,8 @@ jobs:
     needs: combine_artifacts
     runs-on: ${{ matrix.os }}
     strategy:
-      <<: *build_strategy
       matrix:
-        os: [ubuntu-22.04, macos-14]
+        os: [ubuntu-latest, windows-latest, macos-latest, macos-15-intel, ubuntu-24.04-arm, windows-11-arm, ubuntu-22.04, macos-14]
         # Test on the same as the build platforms, plus some other older ones
     steps:
       - uses: actions/checkout@v6
