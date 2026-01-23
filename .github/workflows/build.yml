@@ -14,7 +14,7 @@ jobs:
   build_wheels:
     name: Build wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    strategy:
+    strategy: &build_strategy
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest, ubuntu-24.04-arm]
 
@@ -58,8 +58,10 @@ jobs:
     needs: combine_artifacts
     runs-on: ${{ matrix.os }}
     strategy:
+      <<: *build_strategy
       matrix:
-        os: [ubuntu-latest, ubuntu-22.04, macos-latest, macos-14, windows-latest, ubuntu-24.04-arm]
+        os: [ubuntu-22.04, macos-14]
+        # Test on the same as the build platforms, plus some other older ones
     steps:
       - uses: actions/checkout@v6
       - uses: actions/download-artifact@v6
