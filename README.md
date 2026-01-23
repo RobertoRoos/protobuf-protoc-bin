@@ -78,3 +78,8 @@ In `setup.py` there is logic to determine these values dynamically.
 | `platform.architecture()`  | ('64bit', 'ELF')              | ('64bit', 'ELF')            | ('64bit', 'WindowsPE') | ('64bit', '')             |
 | Wheel platform tag         | manylinux_2_24_aarch64        | manylinux_2_24_x86_64       | win_amd64              | macosx_10_13_universal2   |
 | Protoc archive name        | protoc-vvv-linux-aarch_64.zip | protoc-vvv-linux-x86_64.zip | protoc-vvv-win64.zip   | protoc-vvv-osx-x86_64.zip |
+
+### Testing
+
+You can locally override the version that [`setuptools-scm` detects](https://setuptools-scm.readthedocs.io/en/latest/overrides/#pretend-versions) by writing the environment variable `SETUPTOOLS_SCM_PRETEND_VERSION`.
+This way you can easily mimic specific releases.
