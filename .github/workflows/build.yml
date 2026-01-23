@@ -16,7 +16,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest, macos-15-intel, ubuntu-24.04-arm, windows-11-arm]
+        os: [ubuntu-latest, windows-latest, macos-latest, ubuntu-24.04-arm, windows-11-arm]
 
     steps:
       - uses: actions/checkout@v6
@@ -59,7 +59,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest, macos-15-intel, ubuntu-24.04-arm, windows-11-arm, ubuntu-22.04, macos-14]
+        os: [ubuntu-latest, windows-latest, macos-latest, ubuntu-24.04-arm, windows-11-arm,
+             ubuntu-22.04, macos-14, macos-15-intel]
         # Test on the same as the build platforms, plus some other older ones
     steps:
       - uses: actions/checkout@v6
