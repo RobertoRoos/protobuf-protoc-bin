@@ -11,7 +11,7 @@ from tempfile import TemporaryDirectory
 
 from setuptools import setup
 from setuptools.command.install import install
-from wheel.bdist_wheel import bdist_wheel
+from setuptools.command.bdist_wheel import bdist_wheel
 
 
 class CustomInstallCommand(install):
@@ -100,6 +100,8 @@ class CustomInstallCommand(install):
         with open(
             self.PKG_ROOT / "src" / "protobuf_protoc_bin" / "_version.py", "r"
         ) as fh:
+            # `_version.py` will contain a version that looks like:
+            # "33.2" (without "v")
             re_version = re.compile(r'.*version = [\'"](.*)[\'"]')
             while line := fh.readline():
                 if match := re_version.search(line):

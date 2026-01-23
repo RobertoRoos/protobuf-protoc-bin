@@ -1,5 +1,6 @@
 [build-system]
-requires = ["setuptools", "setuptools-scm", "wheel"]
+requires = ["setuptools >= 70.1.0", "setuptools-scm", "wheel"]
+# Minimal version of setptools that has moved `bdist_wheel` command
 build-backend = "setuptools.build_meta"
 
 [project]
