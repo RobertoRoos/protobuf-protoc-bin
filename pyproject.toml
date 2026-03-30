@@ -13,6 +13,8 @@ authors = [
 readme = "README.md"
 dynamic = ["version"]
 requires-python = ">=2.7"
+license = "BSD-3-Clause"  # Same as the license for https://pypi.org/project/protobuf/
+license-files = ["LICENSE"]
 
 [project.urls]
 Repository = "https://github.com/RobertoRoos/protobuf-protoc-bin"
