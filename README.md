@@ -4,14 +4,16 @@
 [![Auto monitoring of protobuf](https://github.com/RobertoRoos/protobuf-protoc-bin/actions/workflows/protobuf_monitor.yml/badge.svg)](https://github.com/RobertoRoos/protobuf-protoc-bin/actions/workflows/protobuf_monitor.yml)
 [![Build status](https://github.com/RobertoRoos/protobuf-protoc-bin/actions/workflows/build.yml/badge.svg)](https://github.com/RobertoRoos/protobuf-protoc-bin/actions/workflows/build.yml)
 
-This Python package is an installer for [protobuf](https://protobuf.dev/)'s `protoc` compiler.
+Repository of the Python package that ships [protobuf](https://protobuf.dev/)'s `protoc` compiler binary.
 
 Use this package to install a specific version of `protoc` in your project, without having to figure out the installation externally.
+
+The compiler is not added to system PATH automatically, but it will be available in a virtual environment.
 
 This package is not maintained by or affiliated with the official protobuf group!
 
 This repository does not host any binaries on itself.
-Instead, the binaries are downloaded from the official protobuf Github during package built or during source installation.
+Instead, the binaries are downloaded from the official protobuf GitHub during package built or during installation from source.
 
 ## How to install
 
