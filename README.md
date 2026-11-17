@@ -8,8 +8,6 @@ Repository of the Python package that ships [protobuf](https://protobuf.dev/)'s 
 
 Use this package to install a specific version of `protoc` in your project, without having to figure out the installation externally.
 
-The compiler is not added to system PATH automatically, but it will be available in a virtual environment.
-
 This package is not maintained by or affiliated with the official protobuf group!
 
 This repository does not host any binaries on itself.
@@ -26,10 +24,16 @@ pip install protobuf-protoc-bin
 The wheels hosted on PyPi do contain a copy of the protoc releases.
 You can also install this package directly from the Github source.
 During an installation from source, `protoc` will be downloaded fresh from the official Protobuf releases:
-```
+```shell
 pip install "git+https://github.com/RobertoRoos/protobuf-protoc-bin.git@<tag>"
 ```
 (Replacing `<tag>` with a version like `v27.3`.)
+
+If you prefer a user- or system-wide installation, where `protoc` is also added to `PATH`, you could install it with [pipx](https://pipx.pypa.io/) instead:
+```shell
+pipx install protobuf-protoc-bin
+```
+(`uv` also offers such an installer through [uvx](https://docs.astral.sh/uv/guides/tools/).)
 
 ## How to require
 
